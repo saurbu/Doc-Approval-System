@@ -8,7 +8,6 @@ import adminRoutes from "./routes/adminRoutes.js";
 import { employeeLogin } from './controller/adminController.js'
 const app = express()
 app.use(express.json())
-
 app.use("/api/admin", adminRoutes);
 app.use("/api/employee", employeeLogin);
 connectDb()
