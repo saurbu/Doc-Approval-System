@@ -1,6 +1,8 @@
 import express from 'express'
 import dotenv from 'dotenv'
 dotenv.config()
+import cors from "cors";
+
 
 import connectDb from './config/db.js'
 import seedAdmin from './utils/seedAdmin.js'
@@ -8,6 +10,10 @@ import adminRoutes from "./routes/adminRoutes.js";
 import { employeeLogin } from './controller/adminController.js'
 const app = express()
 app.use(express.json())
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use("/api/admin", adminRoutes);
 app.use("/api/employee", employeeLogin);
 connectDb()

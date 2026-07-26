@@ -132,10 +132,17 @@ export const employeeLogin = async (req, res) => {
     try{
         const {
             email,
+            empId,
             password
         } = req.body
 
-        const employee = await Employee.findOne({email})
+        const employee = await Employee.findOne({
+            $or:[
+                { email: email },
+                { empId: empId }
+            ]
+        }
+        )
 
 
         if(!employee){
@@ -168,7 +175,8 @@ export const employeeLogin = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Login Successful",
-            token
+            token,
+            role: employee.role
         });
     }catch(err){
         res.status(500).json({
@@ -344,3 +352,5 @@ export const updateEmployeeStatus = async (req, res) =>{
     }
     
 }
+
+

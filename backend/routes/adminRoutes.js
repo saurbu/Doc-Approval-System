@@ -13,6 +13,6 @@ router.get("/employee/:empId", authMiddleware, adminMiddleware, idEmployee)
 router.get("/employee/search/:name", authMiddleware, adminMiddleware, searchEmployee)
 router.put("/employee/:empId", authMiddleware, adminMiddleware, updateEmployee)
 router.patch("/employee/:empId/status", authMiddleware, adminMiddleware, updateEmployeeStatus)
-
+ 
 
 export default router
