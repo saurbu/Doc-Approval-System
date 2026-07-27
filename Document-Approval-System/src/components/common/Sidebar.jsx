@@ -25,8 +25,8 @@ const Sidebar = ({ activePage, setActivePage }) => {
     }
     
   return (
-    <div className="bg-amber-50 shadow-2xl p-5 w-fit space-y-5 rounded-xl h-screen fixed">
-      <h1 className="text-2xl p-3 font-bold bg-gradient-to-r from-red-500 to-violet-500 bg-clip-text text-transparent">
+    <div className="bg-amber-50 shadow-2xl p-5 w-fit space-y-5 rounded-xl h-screen fixed shadow-[0_0_20px_rgba(0,0,0,0.35)]">
+      <h1 className="text-2xl max-w-lg p-3 font-bold bg-gradient-to-r from-red-500 to-violet-500 bg-clip-text text-transparent">
         XYZ.com
       </h1>
 
@@ -68,13 +68,6 @@ const Sidebar = ({ activePage, setActivePage }) => {
         >
           <ShieldUser size={20} />
           Profile
-        </button>
-        <button
-          onClick={() => setActivePage("setting")}
-          className={menuClass("setting")}
-        >
-          <Settings size={20} />
-          Setting
         </button>
       </nav>
 

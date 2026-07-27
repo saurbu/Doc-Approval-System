@@ -188,12 +188,21 @@ export const employeeLogin = async (req, res) => {
 
 export const allEmployees = async (req, res) =>{
     try{
-        const employees = await Employee.find().select("-password")
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12;
+
+        const skip = (page - 1) * limit;
+
+        const totalEmployees = await Employee.countDocuments();
+        const employees = await Employee.find().select("-password").skip(skip).limit(limit)
 
         res.status(200).json({
             success: true,
             count: employees.length,
-            employees
+            employees,
+            currentPage: page,
+            totalPages: Math.ceil(totalEmployees / limit),
+            totalEmployees
         })
     }catch(err){
         res.status(500).json({

@@ -4,7 +4,6 @@ import Employees from './Employees'
 import AddEmployee from './AddEmployee'
 import Home from './Home'
 import Profile from './Profile'
-import Settings from './Settings'
 
 
 const AdminDashboard = () => {
