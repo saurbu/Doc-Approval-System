@@ -1,5 +1,5 @@
 import express from 'express'
-import {adminLogin, allEmployees, createEmployee, employeeLogin, idEmployee, searchEmployee, updateEmployee, updateEmployeeStatus} from '../controller/adminController.js'
+import {adminLogin, allEmployees, createEmployee, employeeLogin, employeeStats, generateEmployeeId, idEmployee, searchEmployee, updateEmployee, updateEmployeeStatus} from '../controller/adminController.js'
 import authMiddleware from "../middleware/authMiddleware.js"
 import adminMiddleware from "../middleware/adminMiddleware.js"
 
@@ -8,7 +8,9 @@ const router = express.Router()
 router.post("/login", adminLogin)
 router.post("/create-employee", authMiddleware, adminMiddleware, createEmployee)
 router.post("/employee-login", employeeLogin)
+router.get("/generate-empid",authMiddleware,adminMiddleware,generateEmployeeId)
 router.get("/employees", authMiddleware, adminMiddleware, allEmployees)
+router.get("/employee-stats", authMiddleware, adminMiddleware, employeeStats)
 router.get("/employee/:empId", authMiddleware, adminMiddleware, idEmployee)
 router.get("/employee/search/:name", authMiddleware, adminMiddleware, searchEmployee)
 router.put("/employee/:empId", authMiddleware, adminMiddleware, updateEmployee)

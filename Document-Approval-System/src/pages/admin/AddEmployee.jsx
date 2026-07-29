@@ -1,37 +1,218 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AddEmployee = () => {
-  const navigate = useNavigate()
-  const handSubmit = (e)=>{
-    e.preventDefault()
+  const navigate = useNavigate();
 
-    const formData = new FormData(e.target)
+  const token = localStorage.getItem("token");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [add, setAdd] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    role: "",
+    number: "",
+    empId: "",
+    department: "",
+  });
 
-    axios.post('http://localhost:3000/api/admin/create-employee', formData)
-    .then((res) =>{
-      navigate('/employees')
-    })
-    .catch((err)=>{
+
+  const generateEmpId = async()=>{
+
+  try{
+
+    const res = await axios.get(
+      "http://localhost:3000/api/admin/generate-empid",
+      {
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      }
+    )
+
+    console.log("EMP ID RESPONSE:", res.data);
+
+
+    setFormData(prev=>({
+      ...prev,
+      empId: res.data.empId
+    }))
+
+
+  }catch(err){
+    console.log("EMP ID ERROR:", err.response?.data || err.message)
+  }
+
+}
+
+  useEffect(() => {
+    generateEmpId();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setError("");
+    setSuccess("");
+    
+    let newValue = value;
+
+    if (name === "number") {
+      newValue = value.replace(/\D/g, "").slice(0, 10);
+    }
+
+    const updatedData = {
+      ...formData,
+      [name]: newValue,
+    };
+
+
+    setFormData(updatedData);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setAdd(true)
+    if (formData.number.length !== 10) {
+      setError("Mobile number must be exactly 10 digits.");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/admin/create-employee",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSuccess(res.data.message)
+      setError("")
+      setFormData({
+          name: "",
+          email: "",
+          role: "",
+          number: "",
+          empId: "",
+          department: "",
+      });
+      setTimeout(() => {
+        setSuccess("")
+        
+      }, 1000);
+    } catch (err) {
       console.log(err);
-      
-    })
+      setSuccess("");
+
+      setError(
+        err.response?.data?.message || "Failed to create employee."
+      );
+    } finally {
+      setAdd(false)
+    }
   }
 
   return (
-    <div className='ml-3'>
-      <form action="" onSubmit={handSubmit} className='flex flex-col bg-red-300 gap-3'>
-        <input type="text" placeholder=''/>
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-      </form>
-    </div>
-  )
-}
+    <div className="grid grid-cols-3">
+      
+      <div className="ml-3 shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl col-span-2">
+        <h className="flex justify-center p-4 text-4xl font-semibold text-violet-500 underline">Add New Employee </h>
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col p-3 space-y-2 px-8"
+          >
+          <label htmlFor="" className="font-bold text-xl">Name:</label>
+          <input
+            type="text"
+            name="name"
+            className="h-10 border-1 border-gray-200 p-3 outline-none"
+            placeholder="Saurav Sharma"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="" className="font-bold text-xl">Email:</label>
+          <input
+            type="email"
+            name="email"
+            className="h-10 border-1 border-gray-200 p-3 outline-none"
+            placeholder="abc123@gmail.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            />
+          <label htmlFor="" className="font-bold text-xl">Role:</label>
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="h-10 border-1 border-gray-200 px-3 outline-none"
+            required
+          >
+            <option value="" disabled>choose role</option>
+            <option value="Employee">Employee</option>
+            <option value="Manager">Manager</option>
+          </select>
+          <label htmlFor="" className="font-bold text-xl">Number</label>
+          <input
+            type="tel"
+            name="number"
+            placeholder="9876543210"
+            className="h-10 border-1 border-gray-200 p-3 outline-none"
+            value={formData.number}
+            onChange={handleChange}
+            maxLength={10}
+            required
+            />
+          <label htmlFor="" className="font-bold text-xl">Employee Id:</label>
+          
+          <input
+            type="text"
+            name="empId"
+            value={formData.empId}
+            className="h-10 border-1 border-gray-200 p-3 outline-none"
+            readOnly
+            />
+          <label htmlFor="" className="font-bold text-xl">Department:</label>
+          
+          <input
+            type="text"
+            name="department"
+            placeholder="MERN/AI"
+            value={formData.department}
+            className="h-10 border-1 border-gray-200 p-3 outline-none"
+            onChange={handleChange}
+            required
+            />
+          <div>
 
-export default AddEmployee
+            {error && (
+              <p className="bg-red-100 text-red-700 border border-red-300 px-3 py-2 rounded">
+                {error}
+              </p>
+            )}
+
+            {success && (
+              <p className="bg-green-100 text-green-700 border border-green-300 px-3 py-2 rounded">
+                {success}
+              </p>
+            )}
+          </div>
+          <button
+            type="submit"
+            disabled={add}
+            className="bg-green-600 text-white py-2  rounded cursor-pointer"
+            >
+            {add? "Adding..." : "Add Employee"}
+          </button>
+        </form>
+      </div>
+      <div className="ml-3 shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl "></div>
+    </div>
+  );
+};
+
+export default AddEmployee;

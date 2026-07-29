@@ -2,7 +2,7 @@ import User from '../models/User.js'
 import Employee from '../models/employee.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-
+import sendMail from "../utils/sendMail.js";
 
 export const adminLogin = async (req, res) => {
     try{
@@ -63,6 +63,41 @@ const capitalizeName = (name) => {
         .join(" ");
 };
 
+export const generateEmployeeId = async (req,res)=>{
+    try{
+
+        const lastEmployee = await Employee.findOne()
+        .sort({createdAt:-1});
+
+
+        let newId = "EMP-1001";
+
+
+        if(lastEmployee){
+
+            const lastNumber = Number(
+                lastEmployee.empId.replace("EMP-","")
+            );
+
+
+            newId = `EMP-${lastNumber + 1}`;
+        }
+
+
+        res.status(200).json({
+            empId:newId
+        })
+
+
+    }catch(err){
+
+        res.status(500).json({
+            message:err.message
+        })
+
+    }
+}
+
 
 export const createEmployee =async (req, res) =>{
 
@@ -72,7 +107,6 @@ export const createEmployee =async (req, res) =>{
         const {
             name,
             email,
-            password,
             role,
             number,
             empId,
@@ -101,7 +135,9 @@ export const createEmployee =async (req, res) =>{
                 message:"Employee Id already exist"
             })
         }
-        
+        const fName = name.trim().split(" ")[0]
+        const sEmail = email.split("@")[0].substring(0, 3);
+        const password = `${fName}@1${sEmail}`
         const hashPassword = await bcrypt.hash(password, 12)
         
         const newEmployee =await  Employee.create({
@@ -113,16 +149,40 @@ export const createEmployee =async (req, res) =>{
             empId,
             department,
         })
+        
+        await sendMail(
+            newEmployee.email,
+            "Employee Account Created",
+            
+            `
+            <h2>Welcome ${newEmployee.name}</h2>
+            
+            <p>Your account has been created.</p>
+            
+            <h3>Login Credentials</h3>
+            
+            <p>Employee ID : ${newEmployee.empId}</p>
+            
+            <p>Password : ${password}</p>
+            
+            <a href="http://localhost:5173/">
+            Login Here
+            </a>
+            `
+            
+        );
         res.status(201).json({
             success: true,
             message: `${role} created successfully`,
+            generatedPassword: password,
             employee: newEmployee
         })
-    }catch(err){
-        res.status(500).json({
-            message: err.message
-        })
-        
+    }catch (err) {
+        console.error(err);
+
+        return res.status(500).json({
+            message: err.message,
+        });
     }
 
 }
@@ -208,6 +268,28 @@ export const allEmployees = async (req, res) =>{
         res.status(500).json({
             success: false,
             message: err.message
+        })
+    }
+}
+
+export const employeeStats = async(req,res)=>{
+    try{
+
+        const totalEmployees = await Employee.countDocuments();
+
+        const activeEmployees = await Employee.countDocuments({
+            isActive:true
+        });
+
+
+        res.status(200).json({
+            totalEmployees,
+            activeEmployees
+        })
+
+    }catch(err){
+        res.status(500).json({
+            message:err.message
         })
     }
 }

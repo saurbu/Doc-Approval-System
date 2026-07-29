@@ -4,8 +4,9 @@ import { EllipsisVertical, Phone, Laptop, Mail} from 'lucide-react'
 const ActiveEmployees = ({search}) => {
   const [empCard, setEmpCard] = useState([]);
   const [loading, setLoading] = useState(true)
+  const [openMenu, setOpenMenu] = useState(null)
   const [index, setIndex] = useState(1)
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(1)
   const filterEmployee = empCard.filter((emp) => 
     emp.isActive && (
       emp.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -13,13 +14,39 @@ const ActiveEmployees = ({search}) => {
       emp.role.toLowerCase().includes(search.toLowerCase())
     )
   )
+  const toggleStatus = async(empId)=>{
+    try{
 
+      const token = localStorage.getItem("token")
+      const res = await axios.patch(
+        `http://localhost:3000/api/admin/employee/${empId}/status`,
+        {},
+        {
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        }
+      )
+      setEmpCard(prev =>
+        prev.map(emp =>
+          emp.empId === empId
+          ? {...emp,isActive:!emp.isActive}
+          : emp
+        )
+      )
+      setOpenMenu(null)
+
+    }catch(err){
+      console.log(err)
+    }
+
+  }
   useEffect(() =>{
       const countEmp = async ()=>{
         try{
           const token = localStorage.getItem('token')
   
-          const response = await axios.get(`http://localhost:3000/api/admin/employees?page=${index}&limit=12`,
+          const response = await axios.get(`http://localhost:3000/api/admin/employees?page=${index}&limit=9`,
             {
               headers:{
                 Authorization: `Bearer ${token}`
@@ -69,7 +96,48 @@ const ActiveEmployees = ({search}) => {
                   }`}></h1>
                   </div>
                 </div>
-                <div className='hover:bg-gray-300 flex items-center justify-center cursor-pointer w-6 rounded-full'><EllipsisVertical size={18} /></div>
+                <div className="relative">
+
+                  <div
+                    onClick={() =>
+                      setOpenMenu(openMenu === emp._id ? null : emp._id)
+                    }
+                    className="hover:bg-gray-300 flex items-center justify-center cursor-pointer w-6 h-6 rounded-full"
+                  >
+                    <EllipsisVertical size={18} />
+                  </div>
+
+
+                  {
+                    openMenu === emp._id && (
+                      <div className="absolute right-0 top-8 bg-white shadow-lg border rounded-lg w-36 z-50">
+
+                        <button
+                          className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                          onClick={()=>{
+                            console.log("Edit", emp.empId)
+                          }}
+                        >
+                          Edit Details
+                        </button>
+
+
+                        <button
+                          className="w-full text-left px-3 py-2 text-red-500 hover:bg-red-50"
+                          onClick={()=>toggleStatus(emp.empId)}
+                        >
+                          {
+                            emp.isActive 
+                            ? "Deactivate"
+                            : "Activate"
+                          }
+                        </button>
+
+                      </div>
+                    )
+                  }
+
+                </div>
               </div>
               <p className={`${emp.role === "Manager" 
               ? "text-green-500 bg-green-500/10 w-fit px-2 py-1 rounded-2xl border border-green-400"

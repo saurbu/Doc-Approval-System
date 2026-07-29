@@ -7,7 +7,6 @@ import cors from "cors";
 import connectDb from './config/db.js'
 import seedAdmin from './utils/seedAdmin.js'
 import adminRoutes from "./routes/adminRoutes.js";
-import { employeeLogin } from './controller/adminController.js'
 const app = express()
 app.use(express.json())
 app.use(cors({
@@ -15,7 +14,6 @@ app.use(cors({
     credentials: true
 }));
 app.use("/api/admin", adminRoutes);
-app.use("/api/employee", employeeLogin);
 connectDb()
 .then( async () => {
     await seedAdmin() 
@@ -26,6 +24,7 @@ connectDb()
         
     })
 })
+
 
 
 

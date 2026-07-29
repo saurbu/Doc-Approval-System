@@ -4,35 +4,42 @@ import axios from 'axios'
 
 const Home = () => {
 
-  const [allEmp, setAllEmp] = useState("0");
-  const [isActive, setIsActive] = useState("0");
-
+  const [allEmp, setAllEmp] = useState(0);
+  const [isActive, setIsActive] = useState(0);
   useEffect(() =>{
     const countEmp = async ()=>{
+
       try{
+
         const token = localStorage.getItem('token')
 
-        const response = await axios.get("http://localhost:3000/api/admin/employees",
+        const response = await axios.get(
+          "http://localhost:3000/api/admin/employee-stats",
           {
             headers:{
-              Authorization: `Bearer ${token}`
+              Authorization:`Bearer ${token}`
             }
           }
         )
-        
-        const employees = response.data.employees
 
-        const active = employees.filter(emp => emp.isActive).length
-        setAllEmp(response.data.count)
-        setIsActive(active)
+
+        setAllEmp(response.data.totalEmployees)
+
+        setIsActive(response.data.activeEmployees)
+
+
       }catch(err){
-        console.log(err);
-        
+
+        console.log(err)
 
       }
+
     }
+
     countEmp()
+
   },[])
+
 
   return (
     <div className='ml-3 p-3 h-[94vh]  rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.35)]'>
@@ -45,7 +52,8 @@ const Home = () => {
       </div>
 
       <div className='grid grid-cols-5 p-4 gap-2'>
-        <div className='w-50 h-30 shadow-[0_0_20px_rgba(0,0,0,0.18)] rounded-xl p-5'>
+        <div className='w-50 h-30 shadow-[0_0_20px_rgba(0,0,0,0.18)] rounded-xl p-5'
+        >
           <h1 className='text-lg text-blue-500 font-bold'> All Employees</h1>
           <h1 className='text-5xl text-purple-400'>{allEmp}</h1>
         </div>

@@ -17,7 +17,7 @@ const AllEmployees = ({search}) => {
         try{
           const token = localStorage.getItem('token')
   
-          const response = await axios.get(`http://localhost:3000/api/admin/employees?page=${index}&limit=12`,
+          const response = await axios.get(`http://localhost:3000/api/admin/employees?page=${index}&limit=9`,
             {
               headers:{
                 Authorization: `Bearer ${token}`
@@ -46,7 +46,7 @@ const AllEmployees = ({search}) => {
     </div>
   }
   return (
-    <div>
+    <div >
       <div className='grid md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1 gap-5 px-2'>
         {
           filterEmployee.length > 0 ? (

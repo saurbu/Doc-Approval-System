@@ -5,14 +5,14 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
     const navigate = useNavigate();
 
-    const [role, setRole] = useState("Admin");
+    const [role, setRole] = useState("Admin")
 
     const [formData, setFormData] = useState({
         login: "",
         password: ""
     });
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     const handleChange = (e) => {
         setFormData({
@@ -22,9 +22,9 @@ const Login = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
-        setLoading(true);
+        setLoading(true)
 
         try {
 
@@ -32,7 +32,7 @@ const Login = () => {
             let payload = {};
             if (role === "Admin") {
 
-                url = "http://localhost:3000/api/admin/login";
+                url = "http://localhost:3000/api/admin/login"
 
                 payload = {
                     email: formData.login,
@@ -41,9 +41,9 @@ const Login = () => {
             }
             else {
 
-                url = "http://localhost:3000/api/employee/login";
+                url = "http://localhost:3000/api/admin/employee-login"
 
-                const isEmail = formData.login.includes("@");
+                const isEmail = formData.login.includes("@")
 
                 payload = {
                     email: isEmail ? formData.login : "",
@@ -52,37 +52,37 @@ const Login = () => {
                 };
             }
 
-            const response = await axios.post(url, payload);
+            const response = await axios.post(url, payload)
 
             if (response.data.success) {
 
-                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("token", response.data.token)
 
                 const userRole =
                     role === "Admin"
                         ? "Admin"
                         : response.data.role;
 
-                localStorage.setItem("role", userRole);
+                localStorage.setItem("role", userRole)
 
                 if (userRole === "Admin") {
                     navigate("/admin/dashboard");
                 }
                 else if (userRole === "Manager") {
-                    navigate("/manager/dashboard");
+                    navigate("/manager/dashboard")
                 }
                 else {
-                    navigate("/employee/dashboard");
+                    navigate("/employee/dashboard")
                 }
             }
 
         } catch (err) {
             console.log(err);
-            console.log(err.response);
+            console.log(err.response)
 
         } finally {
 
-            setLoading(false);
+            setLoading(false)
 
         }
 

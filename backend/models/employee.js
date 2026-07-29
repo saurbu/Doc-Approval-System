@@ -19,7 +19,7 @@ const empSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum:["Admin", "Employee", "Manager"],
+        enum:["Employee", "Manager"],
         required: true,
     },
     number:{
@@ -39,6 +39,8 @@ const empSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     }
+},{
+    timestamps:true
 })
 
 const empModel = mongoose.model("employee", empSchema)
