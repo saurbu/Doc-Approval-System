@@ -1,24 +1,19 @@
-// src/components/StatusStamp.jsx
-//
-// The one signature element of this module: reviewed documents get an
-// ink-stamp badge, like a real approval stamp on paper. Used in the
-// Pending Documents table and the Approval Timeline.
+import React from 'react';
 
-import './StatusStamp.css';
-
-const LABELS = {
-  approved: 'Approved',
-  rejected: 'Rejected',
-  pending: 'Pending'
+const STYLES = {
+  approved: 'text-emerald-700 bg-emerald-50 border-emerald-600 -rotate-3',
+  rejected: 'text-rose-700 bg-rose-50 border-rose-600 -rotate-3',
+  pending: 'text-amber-700 bg-amber-50 border-amber-500 border-dashed rotate-0',
 };
 
-const StatusStamp = ({ status }) => {
-  const label = LABELS[status] || status;
-  return (
-    <span className={`stamp stamp--${status}`} role="status">
-      {label}
-    </span>
-  );
-};
+const LABELS = { approved: 'Approved', rejected: 'Rejected', pending: 'Pending' };
+
+const StatusStamp = ({ status }) => (
+  <span
+    className={`inline-block text-xs font-bold uppercase tracking-wide px-3 py-1 rounded border-2 ${STYLES[status] || ''}`}
+  >
+    {LABELS[status] || status}
+  </span>
+);
 
 export default StatusStamp;

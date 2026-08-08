@@ -1,12 +1,10 @@
-// src/components/NotificationBell.jsx
-
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { fetchNotifications, markNotificationRead, markAllNotificationsRead } from '../api/notificationApi';
-import './NotificationBell.css';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Bell } from 'lucide-react';
+import { fetchNotifications, markNotificationRead, markAllNotificationsRead } from '../../../services/notificationApi';
 
 const POLL_INTERVAL_MS = 30000;
 
-const NotificationBell = () => {
+const NotificationBell = ({ onViewAll }) => {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -49,40 +47,43 @@ const NotificationBell = () => {
   };
 
   return (
-    <div className="bell-wrapper" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef}>
       <button
-        className="bell-trigger"
         onClick={() => setOpen((o) => !o)}
         aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
+        className="relative p-2 rounded-lg hover:bg-violet-100 text-gray-700"
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M12 3C9.24 3 7 5.24 7 8v4l-2 3v1h14v-1l-2-3V8c0-2.76-2.24-5-5-5z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>
-          <path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-        </svg>
-        {unreadCount > 0 && <span className="bell-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+        <Bell size={20} />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-bold min-w-[16px] h-4 rounded-full flex items-center justify-center px-1">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
       </button>
 
       {open && (
-        <div className="bell-dropdown" role="menu">
-          <div className="bell-dropdown-header">
+        <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50">
+          <div className="flex justify-between items-center px-4 py-3 border-b border-gray-100 font-bold text-gray-900">
             <span>Notifications</span>
             {unreadCount > 0 && (
-              <button className="bell-mark-all" onClick={handleMarkAllRead}>Mark all read</button>
+              <button onClick={handleMarkAllRead} className="text-xs text-violet-600 underline font-medium">
+                Mark all read
+              </button>
             )}
           </div>
 
           {notifications.length === 0 ? (
-            <p className="bell-empty">You're all caught up.</p>
+            <p className="text-center text-sm text-gray-400 py-6">You're all caught up.</p>
           ) : (
-            <ul className="bell-list">
+            <ul className="max-h-80 overflow-y-auto">
               {notifications.slice(0, 6).map((n) => (
                 <li
                   key={n._id}
-                  className={`bell-item ${n.isRead ? '' : 'bell-item--unread'}`}
                   onClick={() => !n.isRead && handleMarkRead(n._id)}
+                  className={`px-4 py-3 border-b border-gray-100 last:border-0 cursor-pointer ${n.isRead ? '' : 'bg-violet-50'}`}
                 >
-                  <p className="bell-message">{n.message}</p>
-                  <time className="bell-time">
+                  <p className="text-sm text-gray-800 mb-1">{n.message}</p>
+                  <time className="text-xs text-gray-400">
                     {new Date(n.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}
                   </time>
                 </li>
@@ -90,7 +91,14 @@ const NotificationBell = () => {
             </ul>
           )}
 
-          <a href="/notifications" className="bell-view-all">View all notifications</a>
+          {onViewAll && (
+            <button
+              onClick={() => { onViewAll(); setOpen(false); }}
+              className="block w-full text-center text-sm text-violet-600 py-2 border-t border-gray-100 hover:bg-violet-50"
+            >
+              View all notifications
+            </button>
+          )}
         </div>
       )}
     </div>
