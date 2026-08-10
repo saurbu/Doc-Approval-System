@@ -29,10 +29,10 @@ const Employees = () => {
   
     
   return (
-    <div className=' ml-3 shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl overflow-y-auto scrollbar-none'>
-      <div className='h-15 px-2 w-full shadow-xl rounded sticky top-0 bg-black/30 flex justify-between items-center'>
-        <h1 className='text-2xl p-2 font-semibold hidden lg:block'>Employees</h1>
-        <div className='flex items-center justify-between h-10 w-[500px] bg-gray-200 rounded-2xl overflow-hidden'>
+    <div className=' md:ml-3 md:shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl overflow-y-auto scrollbar-none'>
+      <div className='h-15 px-2 w-full shadow-xl rounded sticky top-0 bg-black/30 flex md:justify-between items-center'>
+        <h1 className='text-2xl p-2 font-semibold hidden md:block'>Employees</h1>
+        <div className='flex items-center justify-between h-10 md:w-[500px] bg-gray-200 rounded-2xl overflow-hidden'>
         <input 
         type="text" 
         value={search}

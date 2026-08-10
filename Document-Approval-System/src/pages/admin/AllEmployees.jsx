@@ -46,8 +46,8 @@ const AllEmployees = ({search}) => {
     </div>
   }
   return (
-    <div >
-      <div className='grid md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1 gap-5 px-2'>
+    <div className=''>
+      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-5 px-2'>
         {
           filterEmployee.length > 0 ? (
             filterEmployee.map((emp) => (
@@ -124,7 +124,7 @@ const AllEmployees = ({search}) => {
       }
         
       </div>
-        <div className='flex relative bottom-0 justify-center items-center gap-5 p-5'>
+        <div className='flex relative bottom-0 justify-center items-center gap-5 mb-2 md:mb-1 p-5'>
           <button className='bg-amber-400 px-3 py-2 active:scale-95 rounded-lg cursor-pointer font-semibold text-black'
           disabled={index === 1}
           onClick={()=>{

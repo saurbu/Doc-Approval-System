@@ -116,13 +116,13 @@ const AddEmployee = () => {
   }
 
   return (
-    <div className="grid grid-cols-3">
+    <div className="grid md:grid-cols-3">
       
-      <div className="ml-3 shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl col-span-2">
+      <div className="md:ml-3 md:shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl col-span-2">
         <h className="flex justify-center p-4 text-4xl font-semibold text-violet-500 underline">Add New Employee </h>
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col p-3 space-y-2 px-8"
+          className="flex flex-col justify-center p-3 space-y-2 md:px-8"
           >
           <label htmlFor="" className="font-bold text-xl">Name:</label>
           <input
@@ -210,7 +210,7 @@ const AddEmployee = () => {
           </button>
         </form>
       </div>
-      <div className="ml-3 shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl "></div>
+      <div className="ml-3 hidden md:block shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl "></div>
     </div>
   );
 };

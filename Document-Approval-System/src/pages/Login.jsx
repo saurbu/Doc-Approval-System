@@ -89,12 +89,12 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 flex px-30 items-center">
-            <div className="w-[50%] flex justify-center">
+        <div className="min-h-screen bg-slate-100 flex md:justify-between justify-center px-30 items-center">
+            <div className="w-[50%] hidden md:flex justify-center">
               logo
               <img src="" alt="logo" />
             </div>
-            <div className="bg-sky-100/10 backdrop-blur-2xl w-full absolute right-30 max-w-md rounded-xl shadow-xl p-8 border-2 border-sky-200/30">
+            <div className="bg-sky-100/10 backdrop-blur-2xl w-full absolute md:right-30 max-w-md rounded-xl shadow-xl p-8 border-2 border-sky-200/30">
 
                 <h1 className="text-2xl font-bold text-center text-blue-600">
                     Document Approval System
