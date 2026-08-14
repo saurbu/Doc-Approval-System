@@ -162,10 +162,29 @@ const AddEmployee = () => {
             >
               <option value="+880">🇧🇩 +880 (BD)</option>
               <option value="+91">🇮🇳 +91 (IN)</option>
-              <option value="+1">🇺🇸 +1 (US)</option>
+              <option value="+1">🇺🇸 +1 (US/CA)</option>
               <option value="+44">🇬🇧 +44 (UK)</option>
+              <option value="+61">🇦🇺 +61 (AU)</option>
+              <option value="+49">🇩🇪 +49 (DE)</option>
+              <option value="+33">🇫🇷 +33 (FR)</option>
+              <option value="+81">🇯🇵 +81 (JP)</option>
+              <option value="+86">🇨🇳 +86 (CN)</option>
               <option value="+971">🇦🇪 +971 (UAE)</option>
               <option value="+966">🇸🇦 +966 (KSA)</option>
+              <option value="+65">🇸🇬 +65 (SG)</option>
+              <option value="+60">🇲🇾 +60 (MY)</option>
+              <option value="+92">🇵🇰 +92 (PK)</option>
+              <option value="+94">🇱🇰 +94 (LK)</option>
+              <option value="+977">🇳🇵 +977 (NP)</option>
+              <option value="+39">🇮🇹 +39 (IT)</option>
+              <option value="+34">🇪🇸 +34 (ES)</option>
+              <option value="+7">🇷🇺 +7 (RU)</option>
+              <option value="+55">🇧🇷 +55 (BR)</option>
+              <option value="+27">🇿🇦 +27 (ZA)</option>
+              <option value="+82">🇰🇷 +82 (KR)</option>
+              <option value="+90">🇹🇷 +90 (TR)</option>
+              <option value="+20">🇪🇬 +20 (EG)</option>
+              <option value="+62">🇮🇩 +62 (ID)</option>
             </select>
             <input
               type="tel"
