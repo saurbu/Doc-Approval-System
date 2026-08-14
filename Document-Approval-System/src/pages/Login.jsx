@@ -200,6 +200,48 @@ const Login = () => {
 
                 </form>
 
+                {/* Quick Demo Credentials */}
+                <div className="mt-6 pt-5 border-t border-slate-200">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider text-center mb-3">
+                        ⚡ One-Click Demo Credentials
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setRole("Admin");
+                                setFormData({ login: "admin@company.com", password: "Admin@123" });
+                                if (error) setError("");
+                            }}
+                            className="p-2.5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 rounded-lg text-left transition cursor-pointer group"
+                        >
+                            <div className="text-xs font-bold text-indigo-700 group-hover:text-indigo-900">
+                                👑 Demo Admin
+                            </div>
+                            <div className="text-[11px] text-indigo-600 truncate mt-0.5">
+                                admin@company.com
+                            </div>
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setRole("Employee");
+                                setFormData({ login: "emp@company.com", password: "Emp@123" });
+                                if (error) setError("");
+                            }}
+                            className="p-2.5 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 rounded-lg text-left transition cursor-pointer group"
+                        >
+                            <div className="text-xs font-bold text-emerald-700 group-hover:text-emerald-900">
+                                👤 Demo Employee
+                            </div>
+                            <div className="text-[11px] text-emerald-600 truncate mt-0.5">
+                                Click to Auto-fill
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
         </div>
