@@ -99,10 +99,11 @@ const AddEmployee = () => {
           empId: "",
           department: "",
       });
+      generateEmpId();
       setTimeout(() => {
         setSuccess("")
         
-      }, 1000);
+      }, 2000);
     } catch (err) {
       console.log(err);
       setSuccess("");
@@ -119,7 +120,7 @@ const AddEmployee = () => {
     <div className="grid grid-cols-3">
       
       <div className="ml-3 shadow-[0_0_20px_rgba(0,0,0,0.35)] h-[94vh] rounded-xl col-span-2">
-        <h className="flex justify-center p-4 text-4xl font-semibold text-violet-500 underline">Add New Employee </h>
+        <h1 className="flex justify-center p-4 text-4xl font-semibold text-violet-500 underline">Add New Employee </h1>
         <form
           onSubmit={handleSubmit}
           className="flex flex-col p-3 space-y-2 px-8"
@@ -173,20 +174,28 @@ const AddEmployee = () => {
             type="text"
             name="empId"
             value={formData.empId}
-            className="h-10 border-1 border-gray-200 p-3 outline-none"
+            className="h-10 border-1 border-gray-200 p-3 outline-none bg-gray-100 font-semibold text-blue-600 cursor-not-allowed"
             readOnly
             />
           <label htmlFor="" className="font-bold text-xl">Department:</label>
           
-          <input
-            type="text"
+          <select
             name="department"
-            placeholder="MERN/AI"
             value={formData.department}
-            className="h-10 border-1 border-gray-200 p-3 outline-none"
             onChange={handleChange}
+            className="h-10 border-1 border-gray-200 px-3 outline-none"
             required
-            />
+          >
+            <option value="" disabled>Select Department</option>
+            <option value="MERN">MERN Stack</option>
+            <option value="WEB">Web Development</option>
+            <option value="AI/ML">AI & Machine Learning</option>
+            <option value="HR">Human Resources (HR)</option>
+            <option value="FINANCE">Finance</option>
+            <option value="MARKETING">Marketing</option>
+            <option value="DESIGN">UI/UX Design</option>
+            <option value="OPERATIONS">Operations</option>
+          </select>
           <div>
 
             {error && (
@@ -204,7 +213,7 @@ const AddEmployee = () => {
           <button
             type="submit"
             disabled={add}
-            className="bg-green-600 text-white py-2  rounded cursor-pointer"
+            className="bg-green-600 text-white py-2  rounded cursor-pointer font-bold hover:bg-green-700 transition"
             >
             {add? "Adding..." : "Add Employee"}
           </button>

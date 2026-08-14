@@ -13,18 +13,21 @@ const Login = () => {
     });
 
     const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
+        if (error) setError("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         setLoading(true)
+        setError("")
 
         try {
 
@@ -35,7 +38,7 @@ const Login = () => {
                 url = "http://localhost:3000/api/admin/login"
 
                 payload = {
-                    email: formData.login,
+                    email: formData.login.trim(),
                     password: formData.password
                 };
             }
@@ -46,8 +49,8 @@ const Login = () => {
                 const isEmail = formData.login.includes("@")
 
                 payload = {
-                    email: isEmail ? formData.login : "",
-                    empId: isEmail ? "" : formData.login,
+                    email: isEmail ? formData.login.trim() : "",
+                    empId: isEmail ? "" : formData.login.trim(),
                     password: formData.password
                 };
             }
@@ -78,8 +81,7 @@ const Login = () => {
 
         } catch (err) {
             console.log(err);
-            console.log(err.response)
-
+            setError(err.response?.data?.message || "Login failed. Please check your credentials.");
         } finally {
 
             setLoading(false)
@@ -99,6 +101,12 @@ const Login = () => {
                 <h1 className="text-2xl font-bold text-center text-blue-600">
                     Document Approval System
                 </h1>
+
+                {error && (
+                    <div className="mt-4 p-3 bg-red-100 border border-red-300 text-red-700 text-sm font-semibold rounded-lg text-center">
+                        {error}
+                    </div>
+                )}
 
                 <form
                     onSubmit={handleSubmit}

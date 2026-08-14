@@ -196,18 +196,24 @@ export const employeeLogin = async (req, res) => {
             password
         } = req.body
 
-        const employee = await Employee.findOne({
-            $or:[
-                { email: email },
-                { empId: empId }
-            ]
+        const searchCriteria = [];
+        if (email && email.trim()) {
+            searchCriteria.push({ email: email.trim().toLowerCase() });
         }
-        )
+        if (empId && empId.trim()) {
+            searchCriteria.push({ empId: empId.trim() });
+            searchCriteria.push({ empId: empId.trim().toUpperCase() });
+        }
+
+        const employee = await Employee.findOne(
+            searchCriteria.length ? { $or: searchCriteria } : { email: "" }
+        );
 
 
         if(!employee){
             return res.status(404).json({
-                message: "Invalid Employee"
+                success: false,
+                message: "Employee not found with provided Email or Employee ID"
             })
         }
 

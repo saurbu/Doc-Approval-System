@@ -11,11 +11,15 @@ const seedAdmin = async ()=>{
             
         }
 
-        const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12)
+        const adminName = process.env.ADMIN_NAME || "Admin"
+        const adminEmail = process.env.ADMIN_EMAIL || "admin@gmail.com"
+        const adminPassword = process.env.ADMIN_PASSWORD || "admin123"
+
+        const hashedPassword = await bcrypt.hash(adminPassword, 12)
 
         await User.create({
-            name: process.env.ADMIN_NAME,
-            email: process.env.ADMIN_EMAIL,
+            name: adminName,
+            email: adminEmail,
             password: hashedPassword,
             role: "Admin",
             isActive: true
@@ -25,7 +29,45 @@ const seedAdmin = async ()=>{
         
     }catch(err){
         console.log(`Admin Login Error: ${err}`);
-        
+    }
+
+    try {
+        const EmployeeModel = (await import('../models/employee.js')).default;
+        const empExist = await EmployeeModel.findOne({ empId: "EMP-1001" });
+        if (!empExist) {
+            const hashedPwd = await bcrypt.hash("Saurav@123", 12);
+            await EmployeeModel.create({
+                name: "Saurav Sharma",
+                email: "saurav@gmail.com",
+                password: hashedPwd,
+                role: "Employee",
+                number: "9876543219",
+                empId: "EMP-1001",
+                department: "MERN",
+                isActive: true
+            });
+            console.log("Initial Employee EMP-1001 created");
+        }
+
+        const mgrExist = await EmployeeModel.findOne({ empId: "EMP-1002" });
+        if (!mgrExist) {
+            const hashedPwd = await bcrypt.hash("Saurav@123", 12);
+            await EmployeeModel.create({
+                name: "Sharma Saurav",
+                email: "sharma@gmail.com",
+                password: hashedPwd,
+                role: "Manager",
+                number: "9876543218",
+                empId: "EMP-1002",
+                department: "WEB",
+                isActive: true
+            });
+            console.log("Initial Manager EMP-1002 created");
+        }
+
+        await EmployeeModel.deleteOne({ email: "sondipkumarsk@gmail.com" });
+    } catch (err) {
+        console.log(`Employee Seeding Error: ${err}`);
     }
 }
 

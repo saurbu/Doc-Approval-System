@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "dev:frontend": "npm run dev --prefix Document-Approval-System",
+    "dev:backend": "npm run dev --prefix backend"
+  },
   "dependencies": {
     "cloudinary": "^1.41.3",
     "multer": "^2.2.0",
