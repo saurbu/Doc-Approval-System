@@ -13,18 +13,19 @@ const transporter = nodemailer.createTransport({
 const sendMail = async (to, subject, html) => {
   try {
     console.log("Sending email to:", to);
-
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log("Email credentials not provided in .env, skipping email sending.");
+      return;
+    }
     const info = await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to,
       subject,
       html,
     });
-
     console.log("Email sent:", info.response);
   } catch (err) {
-    console.error("Mail Error:", err);
-    throw err;
+    console.warn("Mail warning (Creation succeeded without sending email):", err.message);
   }
 };
 

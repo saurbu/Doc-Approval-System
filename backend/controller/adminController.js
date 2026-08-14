@@ -65,36 +65,28 @@ const capitalizeName = (name) => {
 
 export const generateEmployeeId = async (req,res)=>{
     try{
+        const employees = await Employee.find({}, { empId: 1 });
+        let maxNum = 1000;
 
-        const lastEmployee = await Employee.findOne()
-        .sort({createdAt:-1});
+        employees.forEach(emp => {
+            if (emp.empId && emp.empId.startsWith("EMP-")) {
+                const num = parseInt(emp.empId.replace("EMP-", ""), 10);
+                if (!isNaN(num) && num > maxNum) {
+                    maxNum = num;
+                }
+            }
+        });
 
-
-        let newId = "EMP-1001";
-
-
-        if(lastEmployee){
-
-            const lastNumber = Number(
-                lastEmployee.empId.replace("EMP-","")
-            );
-
-
-            newId = `EMP-${lastNumber + 1}`;
-        }
-
+        const newId = `EMP-${maxNum + 1}`;
 
         res.status(200).json({
-            empId:newId
+            empId: newId
         })
-
 
     }catch(err){
-
         res.status(500).json({
-            message:err.message
+            message: err.message
         })
-
     }
 }
 
