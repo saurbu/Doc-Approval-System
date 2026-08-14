@@ -119,7 +119,7 @@ export const changePassword = async (req, res) => {
 
 export const submitDocument = async (req, res) => {
     try {
-        const { title, description } = req.body
+        const { title, description, fileUrl, fileName } = req.body
 
         if (!title) {
             return res.status(400).json({
@@ -128,19 +128,44 @@ export const submitDocument = async (req, res) => {
             })
         }
 
-        if (!req.file) {
-            return res.status(400).json({
-                success: false,
-                message: "File is required"
-            })
+        let finalFileUrl = fileUrl;
+        let finalFileName = fileName;
+
+        if (!finalFileUrl) {
+            if (!req.file) {
+                return res.status(400).json({
+                    success: false,
+                    message: "File is required"
+                })
+            }
+
+            // Try Cloudinary upload with local fallback
+            try {
+                const cloudResult = await cloudinary.uploader.upload(req.file.path, {
+                    folder: "doc-approval-system",
+                    resource_type: "auto"
+                });
+                finalFileUrl = cloudResult.secure_url;
+                
+                // Clean up local temp file after successful Cloudinary upload (Production Best Practice)
+                if (fs.existsSync(req.file.path)) {
+                    fs.unlinkSync(req.file.path);
+                }
+            } catch (cloudErr) {
+                console.warn("Cloudinary upload failed, falling back to local server storage:", cloudErr.message);
+                // Fallback to local server static URL
+                finalFileUrl = `http://localhost:3000/uploads/${req.file.filename}`;
+            }
+
+            finalFileName = req.file.originalname;
         }
 
         const document = await Document.create({
             employee: req.user.id,
             title: title.trim(),
             description: description?.trim() || "",
-            fileUrl: req.file.path,      // cloudinary secure url
-            fileName: req.file.originalname
+            fileUrl: finalFileUrl,
+            fileName: finalFileName || "uploaded_document"
         })
 
         res.status(201).json({
@@ -149,9 +174,10 @@ export const submitDocument = async (req, res) => {
             document
         })
     } catch (err) {
+        console.error("SUBMIT DOCUMENT ERROR DETAILS:", err);
         res.status(500).json({
             success: false,
-            message: err.message
+            message: err.message || "Failed to upload document"
         })
     }
 }

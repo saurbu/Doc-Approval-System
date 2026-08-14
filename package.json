@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "dev": "npm run dev --prefix Document-Approval-System",
     "dev:frontend": "npm run dev --prefix Document-Approval-System",
     "dev:backend": "npm run dev --prefix backend"
   },

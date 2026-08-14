@@ -15,10 +15,14 @@ export const changePassword = (data) =>
     api.put("/employee/change-password", data)
 
 // ---------- DOCUMENTS ----------
-export const submitDocument = (formData) =>
-    api.post("/employee/documents", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-    })
+export const submitDocument = (payload) => {
+    if (payload instanceof FormData) {
+        return api.post("/employee/documents", payload, {
+            headers: { "Content-Type": "multipart/form-data" }
+        })
+    }
+    return api.post("/employee/documents", payload)
+}
 
 export const myDocuments = (params) =>
     api.get("/employee/documents", { params })

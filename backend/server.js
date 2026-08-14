@@ -14,8 +14,19 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 }));
+app.use("/uploads", express.static("uploads"));
 app.use("/api/admin", adminRoutes);
 app.use("/api/employee", employeeRoutes);
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error("SERVER ERROR UNHANDLED:", err.stack || err);
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || "Internal Server Error"
+    });
+});
+
 connectDb()
     .then(async () => {
         await seedAdmin()

@@ -45,6 +45,7 @@ const DocumentUploadModal = ({ isOpen, onClose, onSuccess }) => {
       formData.append('file', file);
 
       const res = await submitDocument(formData);
+
       if (res.data.success) {
         setTitle('');
         setDescription('');

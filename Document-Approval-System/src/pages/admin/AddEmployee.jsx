@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserPlus, CheckCircle2, AlertCircle, Sparkles, Building2, Phone, Mail, User, ShieldCheck } from "lucide-react";
+import { UserPlus, CheckCircle2, AlertCircle, Sparkles, Building2, Phone, Mail, User, ShieldCheck, Copy, KeyRound, X } from "lucide-react";
 
 const AddEmployee = () => {
   const navigate = useNavigate();
@@ -11,6 +11,9 @@ const AddEmployee = () => {
   const [toast, setToast] = useState(null);
   const [add, setAdd] = useState(false);
   const [countryCode, setCountryCode] = useState("+880");
+  const [createdCredentials, setCreatedCredentials] = useState(null);
+  const [copied, setCopied] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,25 +23,25 @@ const AddEmployee = () => {
     department: "",
   });
 
-  const generateEmpId = async()=>{
-  try{
-    const res = await axios.get(
-      "http://localhost:3000/api/admin/generate-empid",
-      {
-        headers:{
-          Authorization:`Bearer ${token}`
+  const generateEmpId = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:3000/api/admin/generate-empid",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-      }
-    )
+      )
 
-    setFormData(prev=>({
-      ...prev,
-      empId: res.data.empId
-    }))
-  }catch(err){
-    console.log("EMP ID ERROR:", err.response?.data || err.message)
+      setFormData(prev => ({
+        ...prev,
+        empId: res.data.empId
+      }))
+    } catch (err) {
+      console.log("EMP ID ERROR:", err.response?.data || err.message)
+    }
   }
-}
 
   useEffect(() => {
     generateEmpId();
@@ -47,7 +50,7 @@ const AddEmployee = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setError("");
-    
+
     let newValue = value;
 
     if (name === "number") {
@@ -97,16 +100,24 @@ const AddEmployee = () => {
         }
       );
 
-      const createdEmpId = formData.empId;
-      showToast("success", "Employee Added Successfully!", `Generated ID: ${createdEmpId} • Login credentials dispatched via email.`);
-      
+      const generatedPass = res.data.generatedPassword;
+      setCreatedCredentials({
+        name: formData.name,
+        email: formData.email,
+        empId: formData.empId,
+        password: generatedPass,
+        role: formData.role
+      });
+
+      showToast("success", "Employee Account Created!", `Credentials generated for ${formData.name}`);
+
       setFormData({
-          name: "",
-          email: "",
-          role: "",
-          number: "",
-          empId: "",
-          department: "",
+        name: "",
+        email: "",
+        role: "",
+        number: "",
+        empId: "",
+        department: "",
       });
       generateEmpId();
     } catch (err) {
@@ -118,13 +129,21 @@ const AddEmployee = () => {
     }
   }
 
+  const copyCredentials = () => {
+    if (!createdCredentials) return;
+    const text = `Employee Credentials:\nName: ${createdCredentials.name}\nEmployee ID: ${createdCredentials.empId}\nEmail: ${createdCredentials.email}\nPassword: ${createdCredentials.password}`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  };
+
   return (
     <div className="p-6 relative min-h-screen bg-slate-50">
       {/* Toast Notification */}
       {toast && (
         <div className={`fixed top-6 right-6 z-50 flex items-start gap-3 p-4 rounded-xl shadow-2xl border backdrop-blur-md transition-all duration-300 transform translate-y-0 animate-bounce-short ${
-          toast.type === "success" 
-            ? "bg-emerald-950/90 text-emerald-200 border-emerald-500/30" 
+          toast.type === "success"
+            ? "bg-emerald-950/90 text-emerald-200 border-emerald-500/30"
             : "bg-rose-950/90 text-rose-200 border-rose-500/30"
         }`}>
           {toast.type === "success" ? (
@@ -135,6 +154,68 @@ const AddEmployee = () => {
           <div>
             <h4 className="font-semibold text-sm text-white">{toast.message}</h4>
             {toast.details && <p className="text-xs opacity-80 mt-0.5">{toast.details}</p>}
+          </div>
+        </div>
+      )}
+
+      {/* Generated Credentials Popup Modal */}
+      {createdCredentials && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-100 shadow-2xl relative">
+            <button 
+              onClick={() => setCreatedCredentials(null)}
+              className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-slate-900">Account Ready!</h3>
+                <p className="text-xs text-slate-500">Provide these login details to employee</p>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 space-y-3 font-mono text-xs text-slate-800">
+              <div className="flex justify-between border-b border-slate-200/60 pb-2">
+                <span className="text-slate-400 font-sans">Employee Name:</span>
+                <span className="font-bold font-sans">{createdCredentials.name}</span>
+              </div>
+              <div className="flex justify-between border-b border-slate-200/60 pb-2">
+                <span className="text-slate-400 font-sans">Employee ID:</span>
+                <span className="font-bold text-indigo-600">{createdCredentials.empId}</span>
+              </div>
+              <div className="flex justify-between border-b border-slate-200/60 pb-2">
+                <span className="text-slate-400 font-sans">Email Address:</span>
+                <span className="font-semibold">{createdCredentials.email}</span>
+              </div>
+              <div className="flex justify-between items-center bg-indigo-50 p-2.5 rounded-xl border border-indigo-100">
+                <div className="flex items-center gap-2">
+                  <KeyRound className="w-4 h-4 text-indigo-600" />
+                  <span className="text-slate-500 font-sans">Password:</span>
+                </div>
+                <span className="font-extrabold text-sm text-indigo-700">{createdCredentials.password}</span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center gap-3">
+              <button
+                onClick={copyCredentials}
+                className="flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-indigo-500/20 transition cursor-pointer"
+              >
+                <Copy className="w-4 h-4" />
+                <span>{copied ? "Copied to Clipboard!" : "Copy Details"}</span>
+              </button>
+              <button
+                onClick={() => setCreatedCredentials(null)}
+                className="py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -355,8 +436,8 @@ const AddEmployee = () => {
               <div className="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
                 <Mail className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-xs font-semibold text-white">Instant Welcome Email</h4>
-                  <p className="text-[11px] text-indigo-200/60 mt-0.5">Encrypted temporary login link is dispatched automatically.</p>
+                  <h4 className="text-xs font-semibold text-white">Instant Credential Display</h4>
+                  <p className="text-[11px] text-indigo-200/60 mt-0.5">Credentials pop up instantly on screen with 1-click copy.</p>
                 </div>
               </div>
             </div>
