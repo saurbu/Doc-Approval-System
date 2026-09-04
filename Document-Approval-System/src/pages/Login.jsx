@@ -227,7 +227,7 @@ const Login = () => {
                             type="button"
                             onClick={() => {
                                 setRole("Employee");
-                                setFormData({ login: "emp@company.com", password: "Emp@123" });
+                                setFormData({ login: "sondipkumar@gmail.com", password: "Hablu@1son" });
                                 if (error) setError("");
                             }}
                             className="p-2.5 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 rounded-lg text-left transition cursor-pointer group"
@@ -236,7 +236,7 @@ const Login = () => {
                                 👤 Demo Employee
                             </div>
                             <div className="text-[11px] text-emerald-600 truncate mt-0.5">
-                                Click to Auto-fill
+                                sondipkumar@gmail.com
                             </div>
                         </button>
                     </div>

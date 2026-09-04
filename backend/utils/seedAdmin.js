@@ -65,6 +65,22 @@ const seedAdmin = async ()=>{
             console.log("Initial Manager EMP-1002 created");
         }
 
+        const demoEmpExist = await EmployeeModel.findOne({ email: "sondipkumar@gmail.com" });
+        if (!demoEmpExist) {
+            const hashedPwd = await bcrypt.hash("Hablu@1son", 12);
+            await EmployeeModel.create({
+                name: "Sondip Kumar",
+                email: "sondipkumar@gmail.com",
+                password: hashedPwd,
+                role: "Employee",
+                number: "9876543210",
+                empId: "EMP-9999",
+                department: "Engineering",
+                isActive: true
+            });
+            console.log("Demo Employee sondipkumar@gmail.com created");
+        }
+
         await EmployeeModel.deleteOne({ email: "sondipkumarsk@gmail.com" });
     } catch (err) {
         console.log(`Employee Seeding Error: ${err}`);
